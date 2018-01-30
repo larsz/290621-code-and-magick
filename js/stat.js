@@ -6,10 +6,22 @@ var CLOUD_X = 100;
 var CLOUD_Y = 10;
 var CLOUD_GAP = 10;
 var LEGEND_GAP = 20;
+var BASE_FONT = 'PT Mono 16px';
 
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
+};
+
+var renderText = function (ctx, text, x, y, color, font) {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+};
+
+var drawBar = function (ctx, x, y, width, height, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, width, height);
 };
 
 var getMaxElement = function (arr) {
@@ -32,26 +44,13 @@ window.renderStatistics = function (ctx, names, times) {
   renderCloud(ctx, CLOUD_X + CLOUD_GAP, CLOUD_Y + CLOUD_GAP, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
 
-  ctx.fillStyle = '#000';
-  ctx.font = 'PT Mono 16px';
-  ctx.textBaseline = 'hanging';
-  ctx.fillText('Ура вы победили!', 120, 30);
-  ctx.fillText('Список результатов:', 120, 50);
+  renderText(ctx, 'Ура вы победили!', CLOUD_X + LEGEND_GAP, CLOUD_Y + LEGEND_GAP, '#000', BASE_FONT);
+  renderText(ctx, 'Список результатов:', CLOUD_X + LEGEND_GAP, CLOUD_Y + LEGEND_GAP + LEGEND_GAP, '#000', BASE_FONT);
 
   var maxTime = getMaxElement(times);
   var barWidth = 40;
   var columnGap = 50;
   var histogramHeight = 150;
-
-  var drawBar = function (x, y, width, height, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, width, height);
-  };
-
-  var drawBarLegend = function (text, x, y, color) {
-    ctx.fillStyle = color;
-    ctx.fillText(text, x, y);
-  };
 
   for (var i = 0; i < times.length; i++) {
     var barHeight = times[i] * (histogramHeight / maxTime);
@@ -64,14 +63,13 @@ window.renderStatistics = function (ctx, names, times) {
     }
 
     // bars
-    drawBar(barX, barY, barWidth, barHeight, barColor);
+    drawBar(ctx, barX, barY, barWidth, barHeight, barColor);
 
     // players
-    drawBarLegend(names[i], barX, barY - LEGEND_GAP, '#000');
+    renderText(ctx, names[i], barX, barY - CLOUD_GAP, '#000');
 
     // player times
-    drawBarLegend(Math.round(times[i]), barX, barY + barHeight + CLOUD_GAP, '#000');
-
+    renderText(ctx, Math.round(times[i]), barX, barY + barHeight + LEGEND_GAP, '#000');
   }
 
 };
