@@ -11,12 +11,12 @@ setupDialog.classList.remove('hidden');
 var similarList = document.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
 
-var getRandomNumber = function (min, max) {
-  return Math.round(Math.random() * (max - min) + min);
+var getRandomNumber = function (max) {
+  return Math.round(Math.random() * max);
 };
 
 var getRandomElement = function (arr) {
-  return arr[getRandomNumber(0, arr.length - 1)];
+  return arr[getRandomNumber(arr.length - 1)];
 };
 
 var wizardName = function () {
