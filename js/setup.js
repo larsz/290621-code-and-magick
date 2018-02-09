@@ -35,8 +35,55 @@ var WIZARD_EYES_COLOR = [
   'green'
 ];
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 27;
+
 var setupDialog = document.querySelector('.setup');
-setupDialog.classList.remove('hidden');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setupDialog.querySelector('.setup-close');
+
+// handle click on ESC button while popup is open
+var popUpEscHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+// open popup function for event listener
+var openPopup = function () {
+  setupDialog.classList.remove('hidden');
+  document.addEventListener('keydown', popUpEscHandler);
+};
+
+// close popup function for event listener
+var closePopup = function () {
+  setupDialog.classList.add('hidden');
+  document.removeEventListener('keydown', popUpEscHandler);
+};
+
+// popup open from mouse
+setupOpen.addEventListener('click', function () {
+  openPopup();
+});
+
+// popup open from keyboard
+setupOpen.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+});
+
+// popup open from mouse
+setupClose.addEventListener('click', function () {
+  closePopup();
+});
+
+// popup open from keyboard
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+});
 
 var similarList = document.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
