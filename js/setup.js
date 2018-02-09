@@ -36,11 +36,13 @@ var WIZARD_EYES_COLOR = [
 ];
 
 var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var setupDialog = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
 var setupClose = setupDialog.querySelector('.setup-close');
+var userNameInput = setupDialog.querySelector('.setup-user-name');
+
 
 // handle click on ESC button while popup is open
 var popUpEscHandler = function (evt) {
@@ -61,29 +63,36 @@ var closePopup = function () {
   document.removeEventListener('keydown', popUpEscHandler);
 };
 
-// popup open from mouse
+// set listener for mouse click on popup open element
 setupOpen.addEventListener('click', function () {
   openPopup();
 });
 
-// popup open from keyboard
+// set listener for key press on popup open element
 setupOpen.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     openPopup();
   }
 });
 
-// popup open from mouse
+// set listener for mouse click on popup close element
 setupClose.addEventListener('click', function () {
   closePopup();
 });
 
-// popup open from keyboard
+// set listener for key press on popup close element
 setupClose.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     closePopup();
   }
 });
+
+// set listener for focus on username input
+// prevent close popup when username input with focus
+userNameInput.addEventListener('focus', function () {
+  document.removeEventListener('keydown', popUpEscHandler);
+});
+
 
 var similarList = document.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
