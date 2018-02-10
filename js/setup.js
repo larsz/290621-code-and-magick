@@ -25,7 +25,8 @@ var WIZARD_COAT_COLOR = [
   'rgb(241, 43, 107)',
   'rgb(146, 100, 161)',
   'rgb(56, 159, 117)',
-  'rgb(215, 210, 55)', 'rgb(0, 0, 0)'
+  'rgb(215, 210, 55)',
+  'rgb(0, 0, 0)'
 ];
 var WIZARD_EYES_COLOR = [
   'black',
@@ -34,16 +35,33 @@ var WIZARD_EYES_COLOR = [
   'yellow',
   'green'
 ];
+var WIZARD_FIREBALL_COLOR = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
 
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
-var setupDialog = document.querySelector('.setup');
-var setupOpen = document.querySelector('.setup-open');
-var setupClose = setupDialog.querySelector('.setup-close');
-var userNameInput = setupDialog.querySelector('.setup-user-name');
+var fragment = document.createDocumentFragment();
+var setupElement = document.querySelector('.setup');
+var setupOpenElement = document.querySelector('.setup-open');
+var setupCloseElement = setupElement.querySelector('.setup-close');
+var userNameInputElement = setupElement.querySelector('.setup-user-name');
 
+// common functions
+var getRandomNumber = function (max) {
+  return Math.round(Math.random() * max);
+};
 
+var getRandomElement = function (arr) {
+  return arr[getRandomNumber(arr.length - 1)];
+};
+
+// Popup
 // handle click on ESC button while popup is open
 var popUpEscHandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
@@ -53,35 +71,35 @@ var popUpEscHandler = function (evt) {
 
 // open popup function for event listener
 var openPopup = function () {
-  setupDialog.classList.remove('hidden');
+  setupElement.classList.remove('hidden');
   document.addEventListener('keydown', popUpEscHandler);
 };
 
 // close popup function for event listener
 var closePopup = function () {
-  setupDialog.classList.add('hidden');
+  setupElement.classList.add('hidden');
   document.removeEventListener('keydown', popUpEscHandler);
 };
 
 // set listener for mouse click on popup open element
-setupOpen.addEventListener('click', function () {
+setupOpenElement.addEventListener('click', function () {
   openPopup();
 });
 
 // set listener for key press on popup open element
-setupOpen.addEventListener('keydown', function (evt) {
+setupOpenElement.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     openPopup();
   }
 });
 
 // set listener for mouse click on popup close element
-setupClose.addEventListener('click', function () {
+setupCloseElement.addEventListener('click', function () {
   closePopup();
 });
 
 // set listener for key press on popup close element
-setupClose.addEventListener('keydown', function (evt) {
+setupCloseElement.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     closePopup();
   }
@@ -89,51 +107,73 @@ setupClose.addEventListener('keydown', function (evt) {
 
 // set listener for focus on username input
 // prevent close popup when username input with focus
-userNameInput.addEventListener('focus', function () {
+userNameInputElement.addEventListener('focus', function () {
   document.removeEventListener('keydown', popUpEscHandler);
 });
 
+// Main wizard properties
+var mainWizardSetupElement = setupElement.querySelector('.setup-wizard');
+var mainWizardCoatElement = mainWizardSetupElement.querySelector('.wizard-coat');
+var mainWizardEyesElement = mainWizardSetupElement.querySelector('.wizard-eyes');
+var mainWizardFireballElement = setupElement.querySelector('.setup-fireball-wrap');
 
+// Change main wizard coat color by click
+mainWizardCoatElement.addEventListener('click', function () {
+  mainWizardCoatElement.style.fill = getRandomElement(WIZARD_COAT_COLOR);
+});
+
+// Change main wizard eyes color by click
+mainWizardEyesElement.addEventListener('click', function () {
+  mainWizardEyesElement.style.fill = getRandomElement(WIZARD_EYES_COLOR);
+});
+
+// Change main wizard fireball color by click
+mainWizardFireballElement.addEventListener('click', function () {
+  mainWizardFireballElement.style.backgroundColor = getRandomElement(WIZARD_FIREBALL_COLOR);
+});
+
+// Similar Wizards block
 var similarList = document.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
 
-var getRandomNumber = function (max) {
-  return Math.round(Math.random() * max);
-};
+// specific functions
 
-var getRandomElement = function (arr) {
-  return arr[getRandomNumber(arr.length - 1)];
-};
-
-var wizardName = function () {
+var similarWizardName = function () {
   return getRandomElement(WIZARD_NAMES) + ' ' + getRandomElement(WIZARD_LASTNAMES);
 };
 
-var wizards = [];
-var wizardCount = 4;
+// generate data
+var generateSimilarWizards = function (num) {
+  var data = [];
+  var dataCount = num;
 
-for (var i = 0; i < wizardCount; i++) {
-  wizards.push({
-    name: wizardName(),
-    coatColor: getRandomElement(WIZARD_COAT_COLOR),
-    eyesColor: getRandomElement(WIZARD_EYES_COLOR)
-  });
-}
+  for (var i = 0; i < dataCount; i++) {
+    data.push({
+      name: similarWizardName(),
+      coatColor: getRandomElement(WIZARD_COAT_COLOR),
+      eyesColor: getRandomElement(WIZARD_EYES_COLOR)
+    });
+  }
+  return data;
+};
 
-var renderWizard = function (wizard) {
+var similarWizards = generateSimilarWizards(4);
+
+// apply generated data to template
+var renderSimilarWizard = function (similarWizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
-  wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-  wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-  wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+  wizardElement.querySelector('.setup-similar-label').textContent = similarWizard.name;
+  wizardElement.querySelector('.wizard-coat').style.fill = similarWizard.coatColor;
+  wizardElement.querySelector('.wizard-eyes').style.fill = similarWizard.eyesColor;
 
   return wizardElement;
 };
 
-var fragment = document.createDocumentFragment();
-
-for (i = 0; i < wizards.length; i++) {
-  fragment.appendChild(renderWizard(wizards[i]));
+// insert template to DOM element
+for (var i = 0; i < similarWizards.length; i++) {
+  fragment.appendChild(renderSimilarWizard(similarWizards[i]));
 }
 
+// insert to DOM
 similarList.appendChild(fragment);
-setupDialog.querySelector('.setup-similar').classList.remove('hidden');
+setupElement.querySelector('.setup-similar').classList.remove('hidden');
