@@ -107,9 +107,14 @@ setupCloseElement.addEventListener('keydown', function (evt) {
 
 // set listener for focus on username input
 // prevent close popup when username input with focus
-userNameInputElement.addEventListener('focus', function () {
+userNameInputElement.addEventListener('focusin', function () {
   document.removeEventListener('keydown', popUpEscHandler);
 });
+
+userNameInputElement.addEventListener('focusout', function () {
+  document.addEventListener('keydown', popUpEscHandler);
+});
+
 
 // Main wizard properties
 var mainWizardSetupElement = setupElement.querySelector('.setup-wizard');
@@ -145,9 +150,8 @@ var similarWizardName = function () {
 // generate data
 var generateSimilarWizards = function (num) {
   var data = [];
-  var dataCount = num;
 
-  for (var i = 0; i < dataCount; i++) {
+  for (var i = 0; i < num; i++) {
     data.push({
       name: similarWizardName(),
       coatColor: getRandomElement(WIZARD_COAT_COLOR),
@@ -169,11 +173,14 @@ var renderSimilarWizard = function (similarWizard) {
   return wizardElement;
 };
 
-// insert template to DOM element
-for (var i = 0; i < similarWizards.length; i++) {
-  fragment.appendChild(renderSimilarWizard(similarWizards[i]));
-}
+// insert similar wizards to DOM element
+var showSimilarWizards = function (data) {
+  for (var i = 0; i < data.length; i++) {
+    fragment.appendChild(renderSimilarWizard(data[i]));
+  }
+  similarList.appendChild(fragment);
+};
 
-// insert to DOM
-similarList.appendChild(fragment);
+showSimilarWizards(similarWizards);
+
 setupElement.querySelector('.setup-similar').classList.remove('hidden');
