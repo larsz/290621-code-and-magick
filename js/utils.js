@@ -21,6 +21,16 @@ window.utils = (function () {
       if (evt.keyCode === ENTER_KEYCODE) {
         action();
       }
+    },
+    colorize: function (element, colors) {
+      element.addEventListener('click', function () {
+        var color = window.utils.getRandomElement(colors);
+        if (element.tagName.toLowerCase() === 'div') {
+          element.style.backgroundColor = color;
+        } else {
+          element.style.fill = color;
+        }
+      });
     }
   };
 })();

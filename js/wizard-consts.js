@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  window.wizardConsts = {
-    names: [
+  window.WizardConsts = {
+    NAMES: [
       'Иван',
       'Хуан Себастьян',
       'Мария',
@@ -12,7 +12,7 @@
       'Люпита',
       'Вашингтон'
     ],
-    lastnames: [
+    LAST_NAMES: [
       'да Марья',
       'Верон',
       'Мирабелла',
@@ -22,7 +22,7 @@
       'Нионго',
       'Ирвинг'
     ],
-    coatColor: [
+    COAT_COLOR: [
       'rgb(101, 137, 164)',
       'rgb(241, 43, 107)',
       'rgb(146, 100, 161)',
@@ -30,20 +30,20 @@
       'rgb(215, 210, 55)',
       'rgb(0, 0, 0)'
     ],
-    eyesColor: [
+    EYES_COLOR: [
       'black',
       'red',
       'blue',
       'yellow',
       'green'
     ],
-    fireballColor: [
+    FIREBALL_COLOR: [
       '#ee4830',
       '#30a8ee',
       '#5ce6c0',
       '#e848d5',
       '#e6e848'
     ],
-    count: 4
+    QUANTITY: 4
   };
 })();
