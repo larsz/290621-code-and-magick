@@ -107,7 +107,7 @@
 
   artifactsElement.addEventListener('dragleave', function (evt) {
     evt.preventDefault();
-    evt.target.backgroundColor = '';
+    evt.target.style.backgroundColor = '';
   });
 
   document.addEventListener('dragend', function (evt) {
