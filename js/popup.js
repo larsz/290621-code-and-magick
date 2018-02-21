@@ -61,7 +61,7 @@
     evt.preventDefault();
 
     var startCoords = {
-      x: evt.clietX,
+      x: evt.clientX,
       y: evt.clientY
     };
 
