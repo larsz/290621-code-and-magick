@@ -50,6 +50,60 @@
   var closePopup = function () {
     setupElement.classList.add('hidden');
     document.removeEventListener('keydown', popUpEscHandler);
+    setupElement.style.top = '';
+    setupElement.style.left = '';
   };
+
+  var popupHandle = setupElement.querySelector('.upload');
+
+  // drag popup handler
+  popupHandle.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    // prevent upload file click
+    var dragged = false;
+
+    var mouseMoveHandler = function (moveEvt) {
+      moveEvt.preventDefault();
+      dragged = true;
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      setupElement.style.top = (setupElement.offsetTop - shift.y) + 'px';
+      setupElement.style.left = (setupElement.offsetLeft - shift.x) + 'px';
+    };
+
+    var mouseUpHandler = function (upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+
+      if (dragged) {
+        var clickPreventDefaultHandler = function (clickEvt) {
+          clickEvt.preventDefault();
+          popupHandle.removeEventListener('click', clickPreventDefaultHandler);
+        };
+        popupHandle.addEventListener('click', clickPreventDefaultHandler);
+      }
+
+    };
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+
+  });
 
 })();
