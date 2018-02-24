@@ -106,4 +106,7 @@
 
   });
 
+  window.popup = {
+    closePopup: closePopup
+  };
 })();

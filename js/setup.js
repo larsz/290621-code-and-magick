@@ -6,58 +6,37 @@
   var mainWizardCoatElement = mainWizardSetupElement.querySelector('.wizard-coat');
   var mainWizardEyesElement = mainWizardSetupElement.querySelector('.wizard-eyes');
   var mainWizardFireballElement = document.querySelector('.setup-fireball-wrap');
-  var similarList = document.querySelector('.setup-similar-list');
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
 
   // Change color by click
   window.utils.colorize(mainWizardCoatElement, window.WizardConsts.COAT_COLOR);
   window.utils.colorize(mainWizardEyesElement, window.WizardConsts.EYES_COLOR);
   window.utils.colorize(mainWizardFireballElement, window.WizardConsts.FIREBALL_COLOR);
 
-  // Similar Wizards
-  var getWizardName = function () {
-    return window.utils.getRandomElement(window.WizardConsts.NAMES) + ' ' + window.utils.getRandomElement(window.WizardConsts.LAST_NAMES);
-  };
-
-  // Generate Wizard
-  var generateWizards = function (num) {
-    var data = [];
-
-    for (var i = 0; i < num; i++) {
-      data.push({
-        name: getWizardName(),
-        coatColor: window.utils.getRandomElement(window.WizardConsts.COAT_COLOR),
-        eyesColor: window.utils.getRandomElement(window.WizardConsts.EYES_COLOR)
-      });
-    }
-    return data;
-  };
-
-  var generatedWizards = generateWizards(window.WizardConsts.QUANTITY);
-
-  // Apply generated data to template
+  // Apply wizards data to template
   var renderWizard = function (similarWizard) {
+    var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
     var wizardElement = similarWizardTemplate.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = similarWizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = similarWizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = similarWizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = similarWizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = similarWizard.colorEyes;
 
     return wizardElement;
   };
 
   // insert similar wizards to DOM element
-  var fragment = document.createDocumentFragment();
   var showSimilarWizards = function (data) {
+    var similarWizardsElement = document.querySelector('.setup-similar');
+    var similarListElement = similarWizardsElement.querySelector('.setup-similar-list');
+    var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < data.length; i++) {
       fragment.appendChild(renderWizard(data[i]));
     }
-    similarList.appendChild(fragment);
+    similarListElement.appendChild(fragment);
+    similarWizardsElement.classList.remove('hidden');
   };
 
-  showSimilarWizards(generatedWizards);
-
-  document.querySelector('.setup-similar').classList.remove('hidden');
-
+  // popup drag
   var shopElement = document.querySelector('.setup-artifacts-shop');
   var artifactsElement = document.querySelector('.setup-artifacts');
   var artifactCellElement = artifactsElement.querySelectorAll('.setup-artifacts-cell');
@@ -119,4 +98,38 @@
 
   });
 
+  var succesLoadDataHandler = function (loadedData) {
+    // Get random 4 wizards from loaded data
+    var loadedWizards = [];
+    for (var i = 0; i < window.WizardConsts.QUANTITY; i++) {
+      loadedWizards.push(window.utils.getRandomElement(loadedData));
+    }
+    showSimilarWizards(loadedWizards);
+  };
+
+  var succesFormHandler = function () {
+    window.popup.closePopup();
+  };
+
+  var errorHandler = function (errorMessage) {
+    var errorBox = document.createElement('div');
+    errorBox.classList.add('error-message');
+
+    errorBox.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', errorBox);
+  };
+
+  // submit form data
+  var setupElement = document.querySelector('.setup');
+  var setupForm = setupElement.querySelector('.setup-wizard-form');
+
+  setupForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    var formData = new FormData(setupForm);
+
+    window.backend.save(formData, succesFormHandler, errorHandler);
+  });
+
+  // load wizards
+  window.backend.load(succesLoadDataHandler, errorHandler);
 })();
