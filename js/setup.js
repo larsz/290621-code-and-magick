@@ -12,9 +12,12 @@
   window.utils.colorize(mainWizardEyesElement, window.WizardConsts.EYES_COLOR);
   window.utils.colorize(mainWizardFireballElement, window.WizardConsts.FIREBALL_COLOR);
 
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
+  var similarWizardsElement = document.querySelector('.setup-similar');
+  var similarListElement = similarWizardsElement.querySelector('.setup-similar-list');
+
   // Apply wizards data to template
   var renderWizard = function (similarWizard) {
-    var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
     var wizardElement = similarWizardTemplate.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = similarWizard.name;
     wizardElement.querySelector('.wizard-coat').style.fill = similarWizard.colorCoat;
@@ -25,8 +28,6 @@
 
   // insert similar wizards to DOM element
   var showSimilarWizards = function (data) {
-    var similarWizardsElement = document.querySelector('.setup-similar');
-    var similarListElement = similarWizardsElement.querySelector('.setup-similar-list');
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < data.length; i++) {
@@ -100,10 +101,9 @@
 
   var succesLoadDataHandler = function (loadedData) {
     // Get random 4 wizards from loaded data
-    var loadedWizards = [];
-    for (var i = 0; i < window.WizardConsts.QUANTITY; i++) {
-      loadedWizards.push(window.utils.getRandomElement(loadedData));
-    }
+    var loadedWizards = window.utils.shuffleCollection(loadedData.slice(0));
+    loadedWizards = loadedWizards.slice(0, window.WizardConsts.QUANTITY);
+
     showSimilarWizards(loadedWizards);
   };
 
