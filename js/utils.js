@@ -12,6 +12,20 @@ window.utils = (function () {
     getRandomElement: function (arr) {
       return arr[window.utils.getRandomNumber(arr.length - 1)];
     },
+    shuffleCollection: function (arr) {
+      var currentIndex = arr.length;
+      var tempValue;
+      var randomIndex;
+
+      while (currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex--);
+
+        tempValue = arr[currentIndex];
+        arr[currentIndex] = arr[randomIndex];
+        arr[randomIndex] = tempValue;
+      }
+      return arr;
+    },
     isEscEvent: function (evt, action) {
       if (evt.keyCode === ESC_KEYCODE) {
         action();
