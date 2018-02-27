@@ -2,41 +2,6 @@
 
 (function () {
 
-  var mainWizardSetupElement = document.querySelector('.setup-wizard');
-  var mainWizardCoatElement = mainWizardSetupElement.querySelector('.wizard-coat');
-  var mainWizardEyesElement = mainWizardSetupElement.querySelector('.wizard-eyes');
-  var mainWizardFireballElement = document.querySelector('.setup-fireball-wrap');
-
-  // Change color by click
-  window.utils.colorize(mainWizardCoatElement, window.WizardConsts.COAT_COLOR);
-  window.utils.colorize(mainWizardEyesElement, window.WizardConsts.EYES_COLOR);
-  window.utils.colorize(mainWizardFireballElement, window.WizardConsts.FIREBALL_COLOR);
-
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
-  var similarWizardsElement = document.querySelector('.setup-similar');
-  var similarListElement = similarWizardsElement.querySelector('.setup-similar-list');
-
-  // Apply wizards data to template
-  var renderWizard = function (similarWizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
-    wizardElement.querySelector('.setup-similar-label').textContent = similarWizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = similarWizard.colorCoat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = similarWizard.colorEyes;
-
-    return wizardElement;
-  };
-
-  // insert similar wizards to DOM element
-  var showSimilarWizards = function (data) {
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < data.length; i++) {
-      fragment.appendChild(renderWizard(data[i]));
-    }
-    similarListElement.appendChild(fragment);
-    similarWizardsElement.classList.remove('hidden');
-  };
-
   // popup drag
   var shopElement = document.querySelector('.setup-artifacts-shop');
   var artifactsElement = document.querySelector('.setup-artifacts');
@@ -99,24 +64,9 @@
 
   });
 
-  var succesLoadDataHandler = function (loadedData) {
-    // Get random 4 wizards from loaded data
-    var loadedWizards = window.utils.shuffleCollection(loadedData.slice(0));
-    loadedWizards = loadedWizards.slice(0, window.WizardConsts.QUANTITY);
-
-    showSimilarWizards(loadedWizards);
-  };
-
   var succesFormHandler = function () {
+    window.notification.showInfo();
     window.popup.closePopup();
-  };
-
-  var errorHandler = function (errorMessage) {
-    var errorBox = document.createElement('div');
-    errorBox.classList.add('error-message');
-
-    errorBox.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', errorBox);
   };
 
   // submit form data
@@ -127,9 +77,7 @@
     evt.preventDefault();
     var formData = new FormData(setupForm);
 
-    window.backend.save(formData, succesFormHandler, errorHandler);
+    window.backend.save(formData, succesFormHandler, window.notification.showError);
   });
 
-  // load wizards
-  window.backend.load(succesLoadDataHandler, errorHandler);
 })();
