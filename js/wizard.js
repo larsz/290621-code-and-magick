@@ -27,18 +27,14 @@
   });
 
   var wizard = {
-    onEyesChange: function (color) {},
-    onCoatChange: function (color) {}
-  };
-
-  wizard.onEyesChange = function (color) {
-    eyesColor = color;
-    window.debounce(updateWizards);
-  };
-
-  wizard.onCoatChange = function (color) {
-    coatColor = color;
-    window.debounce(updateWizards);
+    onEyesChange: function (color) {
+      eyesColor = color;
+      window.debounce(updateWizards);
+    },
+    onCoatChange: function (color) {
+      coatColor = color;
+      window.debounce(updateWizards);
+    }
   };
 
   var getRank = function (person) {
